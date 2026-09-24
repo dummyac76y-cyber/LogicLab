@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/CircuitCanvas.tsx","./src/components/KarnaughMap.tsx","./src/components/TruthTable.tsx","./src/lib/circuit.ts","./src/lib/kmap.ts","./src/lib/parser.ts","./src/lib/routing.ts","./src/lib/samples.ts","./src/lib/simplifier.ts","./src/lib/truthTable.ts","./src/lib/types.ts"],"version":"5.6.3"}

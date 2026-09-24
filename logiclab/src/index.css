@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-tool {
+    @apply rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-100;
+  }
+  .chip {
+    @apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs text-slate-700;
+  }
+  .toggle-input {
+    @apply rounded-lg border-2 px-4 py-1.5 font-mono text-sm font-bold transition;
+    border-color: #94a3b8;
+    background: #f1f5f9;
+    color: #334155;
+  }
+  .toggle-input.on {
+    border-color: #059669;
+    background: #d1fae5;
+    color: #065f46;
+  }
+}
