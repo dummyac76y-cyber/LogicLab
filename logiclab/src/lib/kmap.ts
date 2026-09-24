@@ -101,12 +101,15 @@ interface PI {
 
 const keyOf = (p: number[]) => p.map((v) => (v === -1 ? 'x' : v)).join('')
 const literalsOf = (p: number[]) => p.filter((v) => v !== -1).length
-/** gap penalty: literal indices should form a contiguous block (ACD preferred over ABD) */
-const spreadOf = (p: number[]) => {
-  const idx = p.map((v, i) => (v === -1 ? -1 : i)).filter((i) => i >= 0)
-  if (idx.length <= 1) return 0
-  return idx[idx.length - 1] - idx[0] + 1 - idx.length
-}
+/**
+ * Canonical preference score for equal-cost covers.
+ * Textbook K-map grouping prefers rectangles whose constant variables are the
+ * MOST SIGNIFICANT ones (a contiguous row/column band), e.g. for minterms
+ * {11,15} the group ACD (pattern 1-11) is preferred over ABD (pattern 11-1),
+ * because ACD spans a full column pair rather than a diagonal-looking band.
+ * We encode this as the sum of dash positions: fewer/lower-indexed dashes win.
+ */
+const canonicalScore = (p: number[]) => p.reduce((s, v, i) => s + (v === -1 ? i : 0), 0)
 
 /**
  * Minimal SOP cover via classic essential-prime-implicant method:
@@ -152,7 +155,7 @@ export function findGroups(minterms: number[]): KMapGroup[] {
     const cmp = (a: [number, number, number], b: [number, number, number]) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]
     const rec = (startIdx: number, chosen: PI[], stillMissing: number[]) => {
       if (stillMissing.length === 0) {
-        const cost: [number, number, number] = [chosen.length, chosen.reduce((s, p) => s + literalsOf(p.pattern), 0), chosen.reduce((s, p) => s + spreadOf(p.pattern), 0)]
+        const cost: [number, number, number] = [chosen.length, chosen.reduce((s, p) => s + literalsOf(p.pattern), 0), chosen.reduce((s, p) => s + canonicalScore(p.pattern), 0)]
         if (!best || cmp(cost, bestCost) < 0 || (cmp(cost, bestCost) === 0)) {
           if (!best || cmp(cost, bestCost) < 0) {
             best = [...chosen]
